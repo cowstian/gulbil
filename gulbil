@@ -1,0 +1,225 @@
+
+
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gul bil</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            width: 90%;
+            justify-content: space-between;
+            height: 70vh; /* Adjusting the height to ensure large buttons */
+        }
+        .player-container {
+            width: 45%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .button {
+            width: 100%;
+            height: 50%; /* Making the button cover most of the height */
+            background: yellow;
+            border: 5px solid #000;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #000;
+            text-align: center;
+        }
+        .button span {
+            display: block;
+        }
+        .button .car-icon {
+            font-size: 2em;
+            margin-top: 10px;
+        }
+        .stats {
+            font-size: 1.2em;
+        }
+        .stats div {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+        .score {
+            font-weight: bold;
+        }
+        .score-adjust {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .adjust-button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background: #ccc;
+        }
+        .name-change {
+            margin-top: 10px;
+            text-align: center.
+        }
+        .name-change input {
+            padding: 10px;
+            font-size: 1em;
+            width: 80%;
+        }
+        .name-change button {
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background: #ccc;
+        }
+        .lead-message {
+            margin: 20px 0;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            color: #ff6600;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gul bil</h1>
+    <div class="lead-message" id="lead-message">Ingen leder ennå.</div>
+    <div class="container">
+        <div class="player-container">
+            <button class="button player1" onclick="incrementScore('player1')" id="player1-button">
+                <span id="player1-name-tag">Spiller 1</span>
+                <span class="car-icon">🚖</span>
+            </button>
+            <div class="stats">
+                <div>Poeng: <span id="player1-score" class="score">0</span></div>
+            </div>
+            <div class="score-adjust">
+                <button class="adjust-button" onclick="adjustScore('player1', -1)">Fjern 1 poeng</button>
+            </div>
+            <div class="name-change">
+                <input type="text" id="player1-name" placeholder="Nytt navn for Spiller 1">
+                <button onclick="changeName('player1')">Lagre navn</button>
+            </div>
+        </div>
+        <div class="player-container">
+            <button class="button player2" onclick="incrementScore('player2')" id="player2-button">
+                <span id="player2-name-tag">Spiller 2</span>
+                <span class="car-icon">🚖</span>
+            </button>
+            <div class="stats">
+                <div>Poeng: <span id="player2-score" class="score">0</span></div>
+            </div>
+            <div class="score-adjust">
+                <button class="adjust-button" onclick="adjustScore('player2', -1)">Fjern 1 poeng</button>
+            </div>
+            <div class="name-change">
+                <input type="text" id="player2-name" placeholder="Nytt navn for Spiller 2">
+                <button onclick="changeName('player2')">Lagre navn</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let player1Score = 0;
+        let player2Score = 0;
+        let player1Name = 'Spiller 1';
+        let player2Name = 'Spiller 2';
+
+        const funnyMessages = [
+            "{name} er i førersetet med {difference} poeng! 🚀",
+            "{name} dominerer spillet med {difference} poeng! 🏆",
+            "Se opp! {name} leder med {difference} poeng! 😎",
+            "{name} er på vei til seier med {difference} poeng! 🥇",
+            "{name} er ustoppelig med {difference} poeng! 💪",
+            "{name} er milevis foran med {difference} poeng! 🏎️",
+            "{name} gir {opponent} en real omgang med {difference} poeng! 🤡",
+            "{opponent} sliter! {name} har {difference} poengs ledelse! 😜",
+            "{name} er kongen av veien med {difference} poeng! 👑",
+            "Oi oi oi! {name} har {difference} poeng mer enn {opponent}! 😅",
+            "{opponent}, ser du en gul bil snart? {name} leder med {difference} poeng! 👀",
+            "{name} kjører fra {opponent} med {difference} poeng! 🚖💨",
+            "Huff da, {opponent}! {name} er langt foran med {difference} poeng! 😬",
+            "{name} ruler med {difference} poeng! 🥳",
+            "{opponent}, du må skjerpe deg! {name} leder med {difference} poeng! 🏁"
+        ];
+
+        function incrementScore(player) {
+            if (player === 'player1') {
+                player1Score++;
+            } else if (player === 'player2') {
+                player2Score++;
+            }
+            updateStats();
+        }
+
+        function adjustScore(player, value) {
+            if (player === 'player1') {
+                player1Score += value;
+            } else if (player === 'player2') {
+                player2Score += value;
+            }
+            updateStats();
+        }
+
+        function changeName(player) {
+            const newName = document.getElementById(`${player}-name`).value;
+            if (newName) {
+                if (player === 'player1') {
+                    player1Name = newName;
+                    document.getElementById('player1-name-tag').innerText = player1Name;
+                } else if (player === 'player2') {
+                    player2Name = newName;
+                    document.getElementById('player2-name-tag').innerText = player2Name;
+                }
+            }
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('player1-score').innerText = player1Score;
+            document.getElementById('player2-score').innerText = player2Score;
+            updateLeadMessage();
+        }
+
+        function updateLeadMessage() {
+            const leadMessageElement = document.getElementById('lead-message');
+            let message = "";
+            if (player1Score > player2Score) {
+                const leadDifference = player1Score - player2Score;
+                message = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+                leadMessageElement.innerText = message.replace("{name}", player1Name).replace("{difference}", leadDifference).replace("{opponent}", player2Name);
+            } else if (player2Score > player1Score) {
+                const leadDifference = player2Score - player1Score;
+                message = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+                leadMessageElement.innerText = message replace("{name}", player2Name).replace("{difference}", leadDifference).replace("{opponent}", player1Name);
+            } else {
+                leadMessageElement.innerText = 'Det er uavgjort!';
+            }
+        }
+    </script>
+</body>
+</html>
